@@ -1,13 +1,9 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 
 ###Loading and preprocessing the data
-```{r loading, echo=TRUE}
+
+```r
 activity <- read.csv("C:/Users/Micika/Desktop/skola/R programming/gettingcleaning/RepData_PeerAssessment1/activity.csv")
 ```
 
@@ -15,55 +11,84 @@ activity <- read.csv("C:/Users/Micika/Desktop/skola/R programming/gettingcleanin
 
 ###What is mean total number of steps taken per day?
 *Steps per day*
-```{r,echo=TRUE}
+
+```r
 allsteps<-aggregate(steps~date, activity,sum,na.rm=TRUE)
 ```
 
 
 *Histogram*
-```{r, echo=TRUE}
+
+```r
 hist(allsteps$steps,col="pink",border="purple",main="Steps per day",xlab="Steps",ylab="Days")
 ```
 
+![](./PA1_template_files/figure-html/unnamed-chunk-2-1.png) 
+
 *Mean*
-```{r, echo=TRUE}
+
+```r
 mean(allsteps$steps)
 ```
 
+```
+## [1] 10766.19
+```
+
 *Median*
-```{r simulation, echo=TRUE}
+
+```r
 median(allsteps$steps)
+```
+
+```
+## [1] 10765
 ```
 
 ---
 
 ###What is the average daily activity pattern?
-```{r, echo=TRUE}
+
+```r
 timesseries<-aggregate(steps~interval,data=activity,mean)
 ```
 
 *Time Series plot*
-```{r simulatedata, echo=TRUE}
+
+```r
 plot(timesseries$interval, timesseries$steps, type="l",main="Avg number of steps across all days", xlab="5 min interval", ylab="steps",col="pink")
 ```
 
+![](./PA1_template_files/figure-html/simulatedata-1.png) 
+
 *Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?*
-```{r, echo=TRUE}
+
+```r
 timesseries$interval[which.max(timesseries$steps)]
+```
+
+```
+## [1] 835
 ```
 
 ---
 
 ###Imputing missing values
 *total number of NAs*
-```{r, echo=TRUE}
+
+```r
 sum(is.na(activity))
+```
+
+```
+## [1] 2304
 ```
 
 ---
 
 ###Strategy- subsetting interval mean for NAs
-```{r, echo=TRUE}
+
+```r
 intervalmean=aggregate(steps~interval, data=activity,mean, na.rm=TRUE)
 activitynew<-activity
 for(i in 1:nrow(activitynew))
@@ -76,31 +101,46 @@ for(i in 1:nrow(activitynew))
 ```
 
 *New Steps per day*
-```{r, echo=TRUE}
+
+```r
 allstepsnew=aggregate(steps~date, data=activitynew,sum, na.rm=TRUE)
 ```
 
 *New Mean*
-```{r, echo=TRUE}
+
+```r
 mean(allstepsnew$steps)
 ```
 
+```
+## [1] 10766.19
+```
+
 *New Median*
-```{r, echo=TRUE}
+
+```r
 median(allstepsnew$steps)
 ```
 
+```
+## [1] 10766.19
+```
+
 *New histogram*
-```{r simulatedataagain, echo=TRUE}
+
+```r
 hist(allsteps$steps,col="pink",border="purple",main="Steps per day",xlab="Steps",ylab="Days")
 ```
+
+![](./PA1_template_files/figure-html/simulatedataagain-1.png) 
 
 Mean is the same, and median is slightly different
 
 ---
 
 ###Are there differences in activity patterns between weekdays and weekends?
-```{r, echo=TRUE}
+
+```r
 whatday<-function(date)
         {
         day<-weekdays(date)
@@ -113,11 +153,14 @@ activitynew$day <- sapply(activitynew$date, FUN = whatday)
 ```
 
 *Plot*
-```{r plot, echo=TRUE}
+
+```r
 library(lattice)
 stepsIntervalnew = aggregate(steps ~ interval + day, activitynew, mean)
 xyplot(steps~interval | factor(day), data=stepsIntervalnew, aspect=1/2, type="l", col="pink")
 ```
+
+![](./PA1_template_files/figure-html/plot-1.png) 
 
 
 
